@@ -30,10 +30,4 @@ jobs:
         run: |
           aws s3 sync . s3://icecream-site-frostypipeline --delete
 
-      # Step 4: (Optional) Invalidate CloudFront cache if you use a CDN
-      # Uncomment this block only if you have a CloudFront distribution
-      # - name: Invalidate CloudFront Cache
-      #   run: |
-      #     aws cloudfront create-invalidation \
-      #       --distribution-id ${{ secrets.CLOUDFRONT_DISTRIBUTION_ID }} \
-      #       --paths "/*"
+     
