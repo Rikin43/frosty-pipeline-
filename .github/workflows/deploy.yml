@@ -1,6 +1,6 @@
-name: Deploy to AWS S3
+name: Deploy Frontend + Backend
 
-# Trigger: runs automatically on every push to the main branch
+# Trigger: runs on every push to main branch
 on:
   push:
     branches:
@@ -8,26 +8,52 @@ on:
 
 jobs:
   deploy:
-    name: Build and Deploy
+    name: Deploy to AWS
     runs-on: ubuntu-latest
 
     steps:
-      # Step 1: Checkout your repository code
+
+      # Step 1: Checkout repository code
       - name: Checkout Repository
         uses: actions/checkout@v3
 
-      # Step 2: Configure AWS credentials using GitHub Secrets
+      # Step 2: Configure AWS credentials from GitHub Secrets
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v2
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: ap-south-1
+          aws-region: ${{ secrets.AWS_REGION }}
 
-      # Step 3: Sync all files to the S3 bucket
-      # --delete removes files in S3 that are no longer in the repo
-      - name: Sync files to S3
+      # Step 3: Deploy frontend HTML/CSS files to S3
+      - name: Deploy Frontend to S3
         run: |
-          aws s3 sync . s3://icecream-site-frostypipeline --delete
+          aws s3 sync . s3://${{ secrets.S3_BUCKET_NAME }} \
+            --exclude ".git/*" \
+            --exclude ".github/*" \
+            --exclude "backend/*" \
+            --exclude "README.md" \
+            --exclude "*.yml" \
+            --delete
 
-     
+      # Step 4: Zip the Lambda backend code
+      - name: Zip Lambda Function
+        run: |
+          cd backend
+          zip -r ../lambda.zip index.js package.json
+
+      # Step 5: Deploy Lambda function to AWS
+      - name: Deploy Lambda to AWS
+        run: |
+          aws lambda update-function-code \
+            --function-name icecream-order-handler \
+            --zip-file fileb://lambda.zip \
+            --region ${{ secrets.AWS_REGION }}
+
+      # Step 6: Verify deployment success
+      - name: Deployment Complete
+        run: |
+          echo "✅ Frontend deployed to S3"
+          echo "✅ Backend deployed to Lambda"
+          echo "🌐 Website: http://${{ secrets.S3_BUCKET_NAME }}.s3-website.ap-south-1.amazonaws.com"
+          echo "🚀 Full stack deployment complete!"
