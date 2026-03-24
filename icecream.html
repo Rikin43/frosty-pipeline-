@@ -211,46 +211,43 @@
     </div>
   </section>
 
-  <!-- FOOTER -->
-  <footer>
-    <div class="footer-logo">🍦 Scoops & Dreams</div>
-    <p>Ahmedabad, Gujarat · Est. 1994 · Made with love & cream</p>
-    <div class="footer-links">
-      <a href="#">Instagram</a>
-      <a href="#">Menu</a>
-      <a href="#">Franchise</a>
-      <a href="#">Contact</a>
-    </div>
-    <p class="footer-copy">© 2026 Scoops & Dreams. All rights reserved.</p>
-  </footer>
-
   <!-- ORDER FORM SECTION -->
 <section id="order-form" class="form-section">
   <div class="form-blob fb1"></div>
   <div class="form-blob fb2"></div>
   <div class="form-inner">
+
+    <!-- LEFT SIDE -->
     <div class="form-left">
-      <div class="section-label">// Place Your Order</div>
+      <div class="section-label">Place Your Order</div>
       <h2>Order Your<br/><em>Favourite Scoop</em></h2>
-      <p>Fill in your details, pick your flavor and we'll deliver straight to your door within 30 minutes!</p>
+      <p>Fill in your details, pick your flavor and we'll deliver straight to your door within 30 minutes. No fuss, just ice cream!</p>
       <div class="delivery-info">
         <span>🛵 Free delivery over ₹400</span>
-        <span>⏱ 30 min delivery</span>
-        <span>📍 Within 5km only</span>
+        <span>⏱️ 30 min guaranteed delivery</span>
+        <span>📍 Within 5km of Ahmedabad</span>
+        <span>🧾 Order ID sent instantly</span>
       </div>
     </div>
+
+    <!-- RIGHT SIDE CARD -->
     <div class="form-right">
       <div class="order-card">
+        <div class="order-card-title">Place Your Order 🍦</div>
+        <div class="order-card-sub">Takes less than 30 seconds · Free delivery available</div>
+
         <div class="input-group">
-          <label>Your Name</label>
+          <label>👤 Your Name</label>
           <input type="text" id="custName" placeholder="e.g. Rahul Patel" />
         </div>
+
         <div class="input-group">
-          <label>Phone Number</label>
+          <label>📱 Phone Number</label>
           <input type="text" id="custPhone" placeholder="e.g. 9876543210" />
         </div>
+
         <div class="input-group">
-          <label>Choose Flavor</label>
+          <label>🍨 Choose Flavor</label>
           <select id="custFlavor">
             <option value="">-- Select a Flavor --</option>
             <option value="Strawberry Bliss">🍓 Strawberry Bliss — ₹120</option>
@@ -261,21 +258,25 @@
             <option value="Rose Gulkand">🌹 Rose Gulkand — ₹130</option>
           </select>
         </div>
+
         <div class="input-group">
-          <label>Number of Scoops</label>
+          <label>🔢 Number of Scoops</label>
           <input type="number" id="custQty" placeholder="e.g. 2" min="1" max="10" />
         </div>
+
         <button id="orderBtn" onclick="placeOrder()">
           <span id="btnText">Place Order 🛵</span>
         </button>
+
         <div id="formMsg" class="form-msg"></div>
       </div>
     </div>
+
   </div>
 </section>
 
 <script>
-  // ⚠️ REPLACE THIS WITH YOUR ACTUAL API GATEWAY URL
+  // ⚠️ Replace with your actual API Gateway URL
   const API_URL = "https://6qdsch9zi9.execute-api.ap-south-1.amazonaws.com/order";
 
   async function placeOrder() {
@@ -286,17 +287,16 @@
     const btn      = document.getElementById("orderBtn");
     const msg      = document.getElementById("formMsg");
 
-    // Basic validation
     if (!name || !phone || !flavor || !quantity) {
       msg.textContent = "⚠️ Please fill in all fields!";
       msg.className = "form-msg error";
       return;
     }
 
-    // Show loading state
     btn.disabled = true;
     document.getElementById("btnText").textContent = "Placing Order...";
     msg.textContent = "";
+    msg.className = "form-msg";
 
     try {
       const response = await fetch(API_URL, {
@@ -308,9 +308,8 @@
       const data = await response.json();
 
       if (response.ok) {
-        msg.innerHTML = `✅ ${data.message}<br/><small>Order ID: ${data.orderId}</small>`;
+        msg.innerHTML = `✅ ${data.message}<br/><small style="opacity:0.7">Order ID: ${data.orderId}</small>`;
         msg.className = "form-msg success";
-        // Clear form
         document.getElementById("custName").value = "";
         document.getElementById("custPhone").value = "";
         document.getElementById("custFlavor").value = "";
@@ -325,10 +324,24 @@
       msg.className = "form-msg error";
     }
 
-    // Reset button
     btn.disabled = false;
     document.getElementById("btnText").textContent = "Place Order 🛵";
   }
 </script>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="footer-logo">🍦 Scoops & Dreams</div>
+    <p>Ahmedabad, Gujarat · Est. 1994 · Made with love & cream</p>
+    <div class="footer-links">
+      <a href="#">Instagram</a>
+      <a href="#">Menu</a>
+      <a href="#">Franchise</a>
+      <a href="#">Contact</a>
+    </div>
+    <p class="footer-copy">© 2026 Scoops & Dreams. All rights reserved.</p>
+  </footer>
+
+ 
 </body>
 </html>
